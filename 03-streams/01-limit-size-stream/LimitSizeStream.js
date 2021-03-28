@@ -8,6 +8,10 @@ class LimitSizeStream extends stream.Transform {
    * @type {number}
    */
   #limit = 0;
+  /**
+   * Суммарный размер переданных данных в байтах
+   * @type {number}
+   */
   #totalSize = 0;
 
   constructor(options) {
