@@ -20,18 +20,19 @@ server.on('request', async (req, res) => {
 
       const readStream = createReadStream(filepath);
 
-      try {
-        for await (const chunk of readStream) {
-          res.write(chunk);
-        }
-      } catch (error) {
+      readStream.on('error', error => {
         if (error.code === 'ENOENT') {
           res.statusCode = 404;
           return res.end('Not found');
         }
-      }
+      })
 
-      res.end();
+      res.on('error', error => {
+        console.error(error);
+      })
+
+      readStream.pipe(res);
+
       break;
 
     default:
