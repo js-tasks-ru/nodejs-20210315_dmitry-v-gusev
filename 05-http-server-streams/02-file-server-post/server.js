@@ -30,23 +30,23 @@ server.on('request', async (req, res) => {
           return res.end('Conflict.');
         }
       } catch (error) {
-        console.error(error);
         res.statusCode = 500;
         return res.end('Internal Server Error');
       }
 
-      const writeStream = createWriteStream(filepath);
+      const writeStream = createWriteStream(filepath, {flags: 'wx'});
       const limitedStream = new LimitSizeStream({limit: 10 ** 6}); // 1mb
 
 
       writeStream.on('error', (error) => {
-        console.error(error);
         res.statusCode = 500;
         return res.end('Internal Server Error');
+      }).on('close', () => {
+        res.statusCode = 201;
+        res.end('File created');
       });
 
       limitedStream.on('error', (error) => {
-        console.error(error);
         if (error.code === 'LIMIT_EXCEEDED') {
           res.statusCode = 413;
           return res.end('Payload Too Large. The request body size should be less than 1MB');
@@ -57,13 +57,11 @@ server.on('request', async (req, res) => {
       });
 
       req.on('error', (error) => {
-        console.error(error);
         res.statusCode = 500;
         return res.end('Internal Server Error');
       });
 
       req.on('aborted', (error) => {
-        console.error(error);
         unlink(filepath, () => {});
         return res.end();
       });
