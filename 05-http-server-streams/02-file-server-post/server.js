@@ -33,7 +33,7 @@ server.on('request', async (req, res) => {
         }
         res.statusCode = 500;
         return res.end('Internal Server Error');
-      }).on('close', () => {
+      }).on('finish', () => {
         res.statusCode = 201;
         res.end('File created');
       });
