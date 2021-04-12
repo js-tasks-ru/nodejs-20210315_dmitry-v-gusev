@@ -9,7 +9,7 @@ const Router = require('koa-router');
 const router = new Router();
 
 router.get('/subscribe', async (ctx, next) => {
-  const newMessage = await new Promise( (resolve) => {
+  const newMessage = await new Promise(resolve => {
     ctx.app.on('newMessage', (message) => {
       if (message) resolve(message);
     });
