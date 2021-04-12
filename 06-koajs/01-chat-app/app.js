@@ -16,8 +16,8 @@ router.get('/subscribe', async (ctx, next) => {
     ctx.res.on('close', () => resolve());
   });
 
-  ctx.res.statusCode = 200;
-  ctx.res.end(newMessage);
+  ctx.status = 200;
+  ctx.body = newMessage;
 });
 
 router.post('/publish', async (ctx, next) => {
